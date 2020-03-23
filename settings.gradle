@@ -1,2 +1,2 @@
-include ':app', ':compiler'
+include ':app', ':compiler', ':annotation'
 rootProject.name='AOP_JavaPoet'
