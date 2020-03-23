@@ -1,6 +1,7 @@
 package com.luying.compiler;
 
 import com.google.auto.service.AutoService;
+import com.luying.annotation.LRouter;
 
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -65,6 +67,16 @@ public class LRouterProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if (set.isEmpty()){//没有扫描到注解
             return false;//表示没处理
+        }
+        //获取包名
+        //获取类名
+
+        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(LRouter.class);
+
+        for (Element element : elements){
+            String pkgName = elementTool.getPackageOf(element).getQualifiedName().toString();
+            String clazzName = element.getSimpleName().toString();
+            messager.printMessage(Diagnostic.Kind.NOTE, "被LRouter注解的类有" + pkgName +"."+ clazzName);
         }
 
 
