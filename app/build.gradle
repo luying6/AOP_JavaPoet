@@ -10,6 +10,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //闭包，专门给注解处理器传值
+        javaCompileOptions{
+            annotationProcessorOptions{
+                arguments = [mValue: 'hello javapoet']
+            }
+        }
     }
     buildTypes {
         release {
@@ -26,4 +33,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+
+    //引入本地注解
+    implementation project(":annotation")
+    //引入本地注解处理器
+    annotationProcessor project(":compiler")
 }

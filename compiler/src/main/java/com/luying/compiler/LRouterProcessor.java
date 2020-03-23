@@ -16,7 +16,8 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types
+import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 
 /**
  * Create by luying
@@ -27,7 +28,7 @@ import javax.lang.model.util.Types
 @AutoService(Processor.class)   //编译期绑定注解
 @SupportedAnnotationTypes({"com.luying.annotation.LRouter"})    //监听注解
 @SupportedSourceVersion(SourceVersion.RELEASE_7)      //版本
-@SupportedOptions("myvalue")    //接受外部传值
+@SupportedOptions("mValue")    //接受外部build.gradle下面定义的值,用来编译器 java和android进行传值
 public class LRouterProcessor extends AbstractProcessor {
 
     private Elements elementTool; //操作Element的工具类，Element对象内部包含类的所有信息(跟插件化热修复的Element不同)
@@ -46,6 +47,10 @@ public class LRouterProcessor extends AbstractProcessor {
         typeTool = processingEnvironment.getTypeUtils();
         messager = processingEnvironment.getMessager();
         filer = processingEnvironment.getFiler();
+
+
+        String mValue = processingEnvironment.getOptions().get("mValue");
+        messager.printMessage(Diagnostic.Kind.NOTE, "-----》》》》" + mValue);
 
     }
 
