@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.luying.annotation.LRouter;
+
+@LRouter(path = "")
 public class MainActivity extends AppCompatActivity {
 
     @Override

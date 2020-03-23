@@ -49,13 +49,26 @@ public class LRouterProcessor extends AbstractProcessor {
         filer = processingEnvironment.getFiler();
 
 
-        String mValue = processingEnvironment.getOptions().get("mValue");
+        String mValue = processingEnvironment.getOptions().get("mValue");//在app的build.gradle下面定义了一个options
         messager.printMessage(Diagnostic.Kind.NOTE, "-----》》》》" + mValue);
 
     }
 
+
+    /**
+     * 每扫描到一个LRouter内部定义的注解就调用一次这个方法
+     * @param set
+     * @param roundEnvironment
+     * @return true:表示注解处理完成,后续如果没有变动service不会再处理  false还没有处理
+     */
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
+        if (set.isEmpty()){//没有扫描到注解
+            return false;//表示没处理
+        }
+
+
+
         return false;
     }
 }
