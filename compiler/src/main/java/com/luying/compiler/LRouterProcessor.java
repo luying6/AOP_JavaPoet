@@ -2,7 +2,12 @@ package com.luying.compiler;
 
 import com.google.auto.service.AutoService;
 import com.luying.annotation.LRouter;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
 
+import java.io.IOException;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -16,6 +21,7 @@ import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -77,7 +83,80 @@ public class LRouterProcessor extends AbstractProcessor {
             String pkgName = elementTool.getPackageOf(element).getQualifiedName().toString();
             String clazzName = element.getSimpleName().toString();
             messager.printMessage(Diagnostic.Kind.NOTE, "被LRouter注解的类有" + pkgName +"."+ clazzName);
+
+            LRouter lRouter = element.getAnnotation(LRouter.class);
+
+            //使用javaPoet
+            //1.生成方法
+            //2.生成类
+            //3.生成包
+            //例1
+//        MethodSpec mainMethod = MethodSpec.methodBuilder("main")
+//                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+//                .returns(void.class)
+//                .addParameter(String[].class, "args")
+//                .addStatement("$T.out.println($S)", System.class, "Hello JavaPoet!")
+//                .build();
+//
+//        TypeSpec testClass = TypeSpec.classBuilder("HelloWorld")
+//                .addMethod(mainMethod)
+//                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+//                .build();
+//
+//
+//        JavaFile pkgInfo = JavaFile.builder("com.luying.aop_javapoet", testClass)
+//                .build();
+//        try {
+//            pkgInfo.writeTo(filer);
+//            messager.printMessage(Diagnostic.Kind.NOTE, "HelloWorlds生成成功");
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            messager.printMessage(Diagnostic.Kind.NOTE, "HelloWorlds生成失败");
+//        }
+//
+
+
+
+
+            //例2
+
+//        public class MainActivity$$$$$$ARouter {
+//            public static Class findTargetClass(String path){
+//                return path.equals("app MainActivity")? MainActivity.class : null
+//            }
+//        }
+
+
+
+            MethodSpec findTargetClass = MethodSpec.methodBuilder("findTargetClass")
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .returns(Class.class)
+                    .addParameter(String.class, "path")
+                    .addStatement("return path.equals($S) ? $T.class : null",lRouter.path(), ClassName.get((TypeElement) element))
+                    .build();
+
+
+
+            String findClassName = clazzName + "$$$$$$ARouter";
+
+
+            TypeSpec myClass = TypeSpec.classBuilder(findClassName)
+                    .addModifiers(Modifier.PUBLIC)
+                    .addMethod(findTargetClass)
+                    .build();
+
+            JavaFile packf = JavaFile.builder(pkgName, myClass).build();
+
+            try {
+                packf.writeTo(filer);
+            } catch (IOException e) {
+                e.printStackTrace();
+                messager.printMessage(Diagnostic.Kind.NOTE, findClassName+"构建失败");
+            }
         }
+
+
 
 
 

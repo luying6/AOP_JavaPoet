@@ -39,4 +39,5 @@ dependencies {
     implementation project(":annotation")
     //引入本地注解处理器
     annotationProcessor project(":compiler")
+    implementation project(":base_common")
 }
